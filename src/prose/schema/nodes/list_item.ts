@@ -21,6 +21,7 @@ export const list_item: NodeSpec<{
     return [
       "li",
       {
+        "data-node-type": "list_item",
         "data-level": level,
       },
       0,

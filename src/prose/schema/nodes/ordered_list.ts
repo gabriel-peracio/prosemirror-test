@@ -1,14 +1,14 @@
 import { NodeSpec } from "../types/NodeSpec";
 
-export const unordered_list: NodeSpec = {
+export const ordered_list: NodeSpec = {
   content: "list_item+",
   group: "block list",
-  parseDOM: [{ tag: "ul" }],
+  parseDOM: [{ tag: "ol" }],
   toDOM() {
     return [
-      "ul",
+      "ol",
       {
-        "data-node-type": "unordered_list",
+        "data-node-type": "ordered_list",
       },
       0,
     ];

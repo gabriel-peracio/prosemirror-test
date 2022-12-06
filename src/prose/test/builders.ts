@@ -34,9 +34,10 @@ export const builders = (nodes: Record<string, nodeBuilderDesc>) => {
   );
 };
 
-export const { doc, p, ul, li } = builders({
+export const { doc, p, ul, ol, li } = builders({
   doc: { nodeType: "doc" },
   p: { nodeType: "paragraph" },
+  ol: { nodeType: "ordered_list" },
   ul: { nodeType: "unordered_list" },
   li: { nodeType: "list_item" },
 });

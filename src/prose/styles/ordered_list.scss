@@ -1,0 +1,144 @@
+$list-max-level: 10;
+$default-list-style-types: decimal;
+$default-list-separator: ".";
+
+/**
+* returns a list of depth attributes up to, but excluding, $max_depth
+* the returned value can be used in a css matcher
+*
+* @example
+* `li:is(getDepthMatcher(4))` will compile to `li:is([depth=1],[depth=2],[depth=3])`
+*
+*/
+@function getDepthMatcher($max-depth) {
+  $matcher: "";
+  @for $k from 0 to $max-depth {
+    $matcher: $matcher +
+      '[depth="#{$k}"],'; // note that this is different from `from 1 through $max_depth`
+  }
+  @return $matcher;
+}
+
+/**
+* returns an unquoted, space separated list of counters between $from and $to (inclusive)
+* @example
+* `li:is(getCounterList(1,3))` will compile to `counter1, counter2, counter3`
+*/
+@function getCounterList($from, $to) {
+  $counters: "";
+  @for $k from $from through $to {
+    $counters: $counters + "level#{$k} ";
+  }
+  @return unquote($counters);
+}
+
+/**
+* Returns a list of counters up to $depth
+* that can be placed inside a `content` string of a marker for ordered lists
+* Takes into account the css variables (to allow customizing counter styles individually)
+* @example
+* `content: assembleMarkerString(2)` will compile to
+* `content: counter0 '.' counter1 '.' counter2 '. '
+*/
+@function assembleMarkerString($depth, $flat: false) {
+  @if $flat {
+    @return counter(level#{$depth}, var(--ol-counter-style-depth#{$depth})) +
+      var(--ol-separator) + " ";
+  }
+  $content-string: counter(level0, var(--ol-counter-style-depth0));
+
+  @if ($depth > 0) {
+    @for $k from 1 through $depth {
+      $content-string: $content-string +
+        var(--ol-separator) +
+        counter(level#{$k}, var(--ol-counter-style-depth#{$k}));
+    }
+  }
+
+  $content-string: $content-string + var(--ol-separator) + " ";
+
+  @return $content-string;
+}
+
+ol[data-node-type="ordered_list"] {
+  --ol-separator: "#{$default-list-separator}";
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  list-style-position: inside;
+
+  > li {
+    display: grid;
+    grid-template-columns: min-content auto;
+    column-gap: 1ch;
+    &:first-child {
+      counter-reset: getCounterList(0, $list-max-level);
+    }
+    > * {
+      grid-column: 2;
+    }
+    &::before {
+      grid-column: 1;
+      // fix: some browsers show a selection on the numbers
+      user-select: none;
+    }
+  }
+
+  @for $level from 0 through $list-max-level {
+    /*
+    * We create a bunch of css variables and initialize by cycling through the types in
+    * $default-list-style-types. These can be overriden in javascript to enable user-defined counter styles
+    */
+    --ol-counter-style-depth#{$level}: #{nth(
+        $default-list-style-types,
+        $level % length($default-list-style-types) + 1
+      )};
+    > li[data-level="#{$level}"] {
+      counter-increment: level#{$level};
+      padding-left: $level * 24px;
+      &::before {
+        content: assembleMarkerString($level, false);
+      }
+
+      /*
+      * Every time we "go back up a level", i.e.:
+      * 1.1.
+      *   1.1.1.
+      * 1.2. // HERE
+      *
+      * Then we reset all the counters deeper than (but not including) the current depth
+      * we could reset all the way to $list-max-level, but this is unnecessary, and so we stop early
+      * only considering depths up to the depth we were before "we went back up a level"
+      */
+      @if ($level > 0) {
+        @for $k from 0 to $level {
+          & + li[data-level="#{$k}"] {
+            counter-reset: getCounterList($k + 1, $level);
+          }
+        }
+      }
+      /*
+      * Whenever we jump back up more than one level, creating a "gap", we make sure to increment
+      * the counters that we skipped over
+      *
+      * 1.
+      *     1.1.1. // without this code, this item would read "1.0.1."
+      *   1.2. // and this one would be 1.1.
+      *
+      * Notice the missing "1.1." which we skipped over. This code makes counters behave as though
+      * it existed
+      */
+      @for $k from $level + 1 through $list-max-level {
+        @if ($k - $level > 1) {
+          & + li[data-level="#{$k}"] {
+            counter-increment: getCounterList($level + 1, $k);
+          }
+        }
+      }
+    }
+
+    &[data-flattenmarker="true"] > li[data-level="#{$level}"]::before {
+      content: assembleMarkerString($level, true);
+    }
+  }
+}

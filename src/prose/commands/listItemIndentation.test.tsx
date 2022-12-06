@@ -74,4 +74,7 @@ describe("listItemIndentation", () => {
       expect.objectContaining({ level: 10 })
     );
   });
+  it.todo(
+    "can unindent an indented list item by pressing backspace at the start of the line"
+  );
 });

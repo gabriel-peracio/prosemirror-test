@@ -1,0 +1,22 @@
+$list-max-level: 10;
+$circleBullets: "\2022", "\25E6", "\25AA";
+$squareBullets: "\25AA", "\25AB", "\2022";
+$diamondBullets: "\2B29", "\25C7", "\2022";
+
+ul[data-node-type="unordered_list"] {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  > li {
+    display: flex;
+    gap: 1ch;
+  }
+  @for $level from 0 through $list-max-level {
+    > li[data-level="#{$level}"] {
+      padding-left: $level * 24px;
+      &::before {
+        content: "#{nth($circleBullets, $level % length($circleBullets) + 1)}";
+      }
+    }
+  }
+}

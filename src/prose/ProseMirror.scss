@@ -9,14 +9,6 @@
   p {
     margin: 0;
   }
-  ul {
-    margin: 0;
-    padding: 0 0 0 2ch;
-    li {
-      &[data-level="1"] {
-        list-style-type: circle;
-        margin-left: 2ch;
-      }
-    }
-  }
+  @import "styles/unordered_list.scss";
+  @import "styles/ordered_list.scss";
 }

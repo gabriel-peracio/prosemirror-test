@@ -5,6 +5,13 @@ export const paragraph: NodeSpec = {
   group: "block textual",
   parseDOM: [{ tag: "p" }],
   toDOM() {
-    return ["p", 0];
+    return [
+      "p",
+
+      {
+        "data-node-type": "paragraph",
+      },
+      0,
+    ];
   },
 };

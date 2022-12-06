@@ -6,7 +6,7 @@ import { EditorProps, EditorView } from "prosemirror-view";
 import { schema } from "./schema";
 import { plugins } from "./plugins";
 import { applyDevTools } from "prosemirror-dev-toolkit";
-import { doc, p, ul, li } from "./test/builders";
+import { doc, p, ol, li } from "./test/builders";
 
 export type ProseEditorProps = {};
 
@@ -17,9 +17,7 @@ export const ProseEditor: React.FC<ProseEditorProps> = (props) => {
       schema: schema,
       plugins,
       // doc: schema.nodes.doc.create(null, [schema.nodes.paragraph.create()!])!,
-      doc: doc(
-        ul(li(p("lorem")), li({ level: 1 }, p("ipsum")), li(p("dolor")))
-      ),
+      doc: doc(ol(li(p("hello"), p("world")))),
     });
   });
   const editorProps: EditorProps = {};

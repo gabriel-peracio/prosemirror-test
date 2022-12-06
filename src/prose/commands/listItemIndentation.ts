@@ -9,6 +9,10 @@ export enum Indentation {
   Decrease = -1,
 }
 
+/**
+ * Indent or unindent a list item
+ * @param indentation Whether to indent or unindent
+ */
 export const listItemIndentation =
   (indentation: Indentation): Command =>
   ({ tr, selection: { $from, $to, from, to } }, dispatch) => {

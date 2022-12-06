@@ -3,6 +3,12 @@ import { MarkSpec } from "../types/MarkSpec";
 export const underline: MarkSpec = {
   parseDOM: [{ tag: "u" }],
   toDOM() {
-    return ["u", 0];
+    return [
+      "u",
+      {
+        "data-mark-type": "underline",
+      },
+      0,
+    ];
   },
 };

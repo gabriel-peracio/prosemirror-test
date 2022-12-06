@@ -33,24 +33,24 @@ export const placeCursorByQuery = (
   }
 
   const nextPipe = cursorPlacementQuery.indexOf("|", offset + 1);
-  const range = nextPipe === -1 ? 0 : nextPipe - 1;
-
+  const range = nextPipe === -1 ? 0 : nextPipe - offset - 1;
   const plainQuery = cursorPlacementQuery.replaceAll("|", "");
-
-  const foundElement = screen.getByText(plainQuery, { exact: false });
-  const queryOffsetInElement =
-    foundElement.textContent?.indexOf(plainQuery) ?? 0;
-
-  const pos = view.posAtDOM(foundElement, 0);
-
+  let foundPos: number | null = null;
+  tr.doc.nodesBetween(0, tr.doc.content.size, (node, pos) => {
+    if (foundPos !== null) return false;
+    let foundIndex: number;
+    if (node.isText && (foundIndex = node.text!.indexOf(plainQuery)) !== -1) {
+      foundPos = pos + foundIndex + offset;
+    }
+    return true;
+  });
+  if (foundPos === null) {
+    throw new Error(`Could not find ${plainQuery} in the document.`);
+  }
   act(() => {
     dispatch(
       tr.setSelection(
-        TextSelection.create(
-          tr.doc,
-          pos + queryOffsetInElement + offset,
-          pos + queryOffsetInElement + offset + range
-        )
+        TextSelection.create(tr.doc, foundPos!, foundPos! + range)
       )
     );
   });

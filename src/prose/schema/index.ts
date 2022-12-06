@@ -1,5 +1,12 @@
 import { Schema } from "prosemirror-model";
-import { doc, paragraph, text, unordered_list, list_item } from "./nodes";
+import {
+  doc,
+  paragraph,
+  text,
+  unordered_list,
+  list_item,
+  ordered_list,
+} from "./nodes";
 import { em, strong, underline } from "./marks";
 
 export const nodes = {
@@ -7,6 +14,7 @@ export const nodes = {
   text,
   paragraph,
   unordered_list,
+  ordered_list,
   list_item,
 };
 
@@ -16,4 +24,4 @@ export const marks = {
   em,
 };
 
-export const schema = new (Schema as any)({ nodes, marks });
+export const schema = new Schema({ nodes: nodes as any, marks });
