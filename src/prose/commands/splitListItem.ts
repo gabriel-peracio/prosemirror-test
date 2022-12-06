@@ -16,8 +16,9 @@ export const splitListItem: Command = (
   if ($from.node(-1).type !== schema.nodes.list_item) return false;
 
   const listItemNodeAttrs = $from.node(-1).attrs;
-  if (empty) {
-    // caret selection
+  if (empty || $from.node(-1) === $to.node(-1)) {
+    // caret selection or selection within the same list item
+    // offsetInGroup is the start position of the current node
     const offsetInGroup = $to.before() - ($to.before(-1) + 1);
     let contentAfterTo = $to
       .node(-1)
@@ -49,32 +50,6 @@ export const splitListItem: Command = (
         TextSelection.create(tr.doc, tr.mapping.map($from.pos) + 4)
       );
     }
-  } else if ($from.node(-1) === $to.node(-1)) {
-    // selection within the same list item
-    const offsetInGroup = $to.before() - ($to.before(-1) + 1);
-    const contentAfterTo = $to
-      .node(-1)
-      .content.cut($to.parentOffset + offsetInGroup + 1);
-    const shouldDeleteEmptyParagraphBehind =
-      $from.start() === $from.pos && $from.start(-1) !== $from.pos - 1;
-    if (shouldDeleteEmptyParagraphBehind) {
-      tr.delete($from.start() + $from.parentOffset - 1, $from.end(-1));
-    } else {
-      tr.delete($from.start() + $from.parentOffset, $from.end(-1) + 1);
-    }
-    tr.insert(
-      $from.start() + $from.parentOffset,
-      schema.nodes.list_item.create(listItemNodeAttrs, contentAfterTo)
-    );
-    if (shouldDeleteEmptyParagraphBehind) {
-      tr.setSelection(
-        TextSelection.create(tr.doc, tr.mapping.map($from.pos) + 3)
-      );
-    } else {
-      tr.setSelection(
-        TextSelection.create(tr.doc, tr.mapping.map($from.pos) + 4)
-      );
-    }
   } else {
     if ($to.node(-1).type === schema.nodes.list_item) {
       const contentAfterTo = $to.node(-1).content.cut($to.parentOffset + 1);
@@ -92,20 +67,29 @@ export const splitListItem: Command = (
         TextSelection.create(tr.doc, tr.mapping.map($to.pos) + 4)
       );
     } else {
-      const contentAfterTo = $to.node(0).slice(tr.mapping.map($to.pos));
-      tr.deleteSelection();
-      const newListItem = schema.nodes.list_item.create(
-        listItemNodeAttrs,
-        contentAfterTo.content
+      const contentAfterTo = $to
+        .node(0)
+        .slice(tr.mapping.map($to.pos), $to.end() + 1);
+      const shouldDeleteEmptyParagraphBehind =
+        $from.start() === $from.pos && $from.start(-1) !== $from.pos - 1;
+      if (shouldDeleteEmptyParagraphBehind) {
+        tr.delete($from.start() + $from.parentOffset - 1, $to.end() + 1);
+      } else {
+        tr.delete($from.start() + $from.parentOffset, $to.end());
+      }
+      tr.insert(
+        $from.start() + $from.parentOffset,
+        schema.nodes.list_item.create(listItemNodeAttrs, contentAfterTo.content)
       );
-      tr.replaceWith(
-        tr.mapping.map($to.pos),
-        tr.mapping.map($to.end()),
-        newListItem
-      );
-      tr.setSelection(
-        TextSelection.create(tr.doc, tr.mapping.map($to.pos) + 4)
-      );
+      if (shouldDeleteEmptyParagraphBehind) {
+        tr.setSelection(
+          TextSelection.create(tr.doc, tr.mapping.map($from.pos - 1) + 3)
+        );
+      } else {
+        tr.setSelection(
+          TextSelection.create(tr.doc, tr.mapping.map($from.pos) + 4)
+        );
+      }
     }
   }
 

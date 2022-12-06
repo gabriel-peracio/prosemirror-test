@@ -3,6 +3,7 @@ import {
   listItemIndentation,
 } from "prose/commands/listItemIndentation";
 import { splitListItem } from "prose/commands/splitListItem";
+import { unindentFromStart } from "prose/commands/unindentFromStart";
 import { schema } from "prose/schema";
 import {
   chainCommands,
@@ -21,8 +22,8 @@ import {
 import { redo, undo } from "prosemirror-history";
 
 export const Keymap = {
-  Enter: chainCommands(splitListItem, splitBlock),
-  Backspace: chainCommands(deleteSelection, joinBackward),
+  Enter: chainCommands(liftEmptyBlock, splitListItem, splitBlock),
+  Backspace: chainCommands(unindentFromStart, deleteSelection, joinBackward),
   Delete: chainCommands(deleteSelection, joinForward),
   Tab: listItemIndentation(Indentation.Increase),
   "Shift-Tab": listItemIndentation(Indentation.Decrease),

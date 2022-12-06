@@ -3,16 +3,18 @@ import {
   doc,
   paragraph,
   text,
+  heading,
   unordered_list,
-  list_item,
   ordered_list,
+  list_item,
 } from "./nodes";
 import { em, strong, underline } from "./marks";
 
 export const nodes = {
   doc,
-  text,
   paragraph,
+  text,
+  heading,
   unordered_list,
   ordered_list,
   list_item,
