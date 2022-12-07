@@ -3,6 +3,7 @@ import { DOMOutputSpec } from "prosemirror-model";
 export type NodeSpec<A = {}> = {
   content?: string;
   group?: string;
+  inline?: boolean;
   parseDOM?: Array<{
     tag: string;
     getAttrs?: (node: string | HTMLElement) => A;

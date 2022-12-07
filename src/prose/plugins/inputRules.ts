@@ -46,10 +46,52 @@ const headingMarkdownRule = new InputRule(
   }
 );
 
+const blockquoteMarkdownRule = new InputRule(
+  /^\>\s$/,
+  (state, match, start, end) => {
+    const { tr } = state;
+    tr.replaceWith(start - 1, end + 1, schema.nodes.blockquote.create());
+    return tr;
+  }
+);
+
+const anchorMarkdownRule = new InputRule(
+  /^\[(?<text>.+?)\]\((?<href>.+?)\)$/,
+  (state, match, start, end) => {
+    const { tr } = state;
+    tr.replaceWith(
+      start - 1,
+      end + 1,
+      schema.text(match.groups!.text, [
+        schema.marks.anchor.create({ href: match.groups!.href }),
+      ])
+    );
+    return tr;
+  }
+);
+const imgMarkdownRule = new InputRule(
+  /^\!\[(?<alt>.+?)\]\((?<src>.+?)\)$/,
+  (state, match, start, end) => {
+    const { tr } = state;
+    tr.replaceWith(
+      start - 1,
+      end + 1,
+      schema.nodes.image.create({
+        src: match.groups!.src,
+        alt: match.groups!.alt,
+      })
+    );
+    return tr;
+  }
+);
+
 const rules: InputRule[] = [
   ulMarkdownRule,
   olMarkdownRule,
   headingMarkdownRule,
+  blockquoteMarkdownRule,
+  anchorMarkdownRule,
+  imgMarkdownRule,
 ];
 
 export const InputRules = inputRules({ rules });

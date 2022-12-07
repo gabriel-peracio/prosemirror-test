@@ -5,3 +5,5 @@ export { unordered_list } from "./unordered_list";
 export { ordered_list } from "./ordered_list";
 export { list_item } from "./list_item";
 export { heading } from "./heading";
+export { blockquote } from "./blockquote";
+export { image } from "./image";

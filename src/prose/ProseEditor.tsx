@@ -17,7 +17,7 @@ export const ProseEditor: React.FC<ProseEditorProps> = (props) => {
       schema: schema,
       plugins,
       // doc: schema.nodes.doc.create(null, [schema.nodes.paragraph.create()!])!,
-      doc: doc(ol(li({ level: 1 }, p("hello")))),
+      doc: doc(p()),
     });
   });
   const editorProps: EditorProps = {};

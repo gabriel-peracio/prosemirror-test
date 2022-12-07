@@ -1,0 +1,17 @@
+blockquote[data-node-type="blockquote"] {
+  margin: 0;
+  padding: 16px 32px;
+  position: relative;
+  background: #eff;
+
+  border-left: 4px solid #0aa;
+
+  &::before {
+    content: "\201C";
+    position: absolute;
+    color: #0aa;
+    font-size: 3em;
+    top: 0;
+    left: 8px;
+  }
+}
