@@ -7,7 +7,6 @@ export const paragraph: NodeSpec = {
   toDOM() {
     return [
       "p",
-
       {
         "data-node-type": "paragraph",
       },

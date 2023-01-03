@@ -11,8 +11,6 @@ export const image: NodeSpec<{ src: string; alt: string }> = {
     {
       tag: "img",
       getAttrs: (domNode) => {
-        if (!(domNode instanceof HTMLImageElement))
-          return { src: "#", alt: "" };
         return {
           src: domNode.getAttribute("src") ?? "#",
           alt: domNode.getAttribute("alt") ?? "",

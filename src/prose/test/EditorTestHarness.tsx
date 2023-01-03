@@ -1,11 +1,15 @@
-import { Keymap } from "prose/plugins/Keymap";
 import { schema } from "prose/schema";
+import { validateSchema } from "prose/utils/validateSchema";
+import { Node } from "prosemirror-model";
 import { EditorState, EditorStateConfig } from "prosemirror-state";
 import { EditorProps, EditorView } from "prosemirror-view";
-import { keymap } from "prosemirror-keymap";
-import { history } from "prosemirror-history";
-import React, { useCallback, useEffect, useState } from "react";
-import { Node } from "prosemirror-model";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 export type EditorTestHarnessProps = {
   onViewChanged: (view: EditorView) => void;
@@ -26,7 +30,8 @@ export const EditorTestHarness: React.FC<EditorTestHarnessProps> = ({
     });
   });
   const editorProps: EditorProps = {};
-  const [editorView] = useState(() => {
+
+  const editorView = useMemo(() => {
     const view = new EditorView(null, {
       ...editorProps,
       state: editorState,
@@ -38,7 +43,7 @@ export const EditorTestHarness: React.FC<EditorTestHarnessProps> = ({
       },
     });
     return view;
-  });
+  }, []);
 
   const editorRef = useCallback(
     (el: HTMLDivElement | null) => {
@@ -52,6 +57,10 @@ export const EditorTestHarness: React.FC<EditorTestHarnessProps> = ({
   useEffect(() => {
     onViewChanged(editorView);
   }, [editorView, onViewChanged]);
+
+  useEffect(() => {
+    validateSchema(editorState);
+  });
 
   return <div className="ProseEditor" ref={editorRef} spellCheck={false}></div>;
 };

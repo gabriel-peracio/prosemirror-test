@@ -4,7 +4,8 @@ export const list_item: NodeSpec<{
   level: number;
 }> = {
   content: "textual*",
-  group: "block list",
+  group: "list_item",
+  defining: true,
   attrs: {
     level: { default: 0 },
   },
@@ -12,7 +13,6 @@ export const list_item: NodeSpec<{
     {
       tag: "li",
       getAttrs: (domNode) => {
-        if (!(domNode instanceof HTMLElement)) return { level: 0 };
         return { level: parseInt(domNode.dataset.level ?? "0") };
       },
     },

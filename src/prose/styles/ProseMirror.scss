@@ -9,8 +9,8 @@
   p {
     margin: 0;
   }
-  @import "styles/unordered_list.scss";
-  @import "styles/ordered_list.scss";
-  @import "styles/heading.scss";
-  @import "styles/blockquote.scss";
+  @import "./unordered_list.scss";
+  @import "./ordered_list.scss";
+  @import "./heading.scss";
+  @import "./blockquote.scss";
 }

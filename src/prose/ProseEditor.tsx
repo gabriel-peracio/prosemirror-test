@@ -1,27 +1,48 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import styles from "./ProseEditor.module.scss";
-import "./ProseMirror.scss";
+import { applyDevTools } from "prosemirror-dev-toolkit";
 import { EditorState } from "prosemirror-state";
 import { EditorProps, EditorView } from "prosemirror-view";
-import { schema } from "./schema";
+import React, {
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { Image } from "./nodeViews";
+import { Blockquote } from "./nodeViews/Blockquote/Blockquote";
+import { nodeViewStore } from "./nodeViews/NodeViewStore";
+import { reactNodeViewFactory } from "./nodeViews/reactNodeViewFactory";
 import { plugins } from "./plugins";
-import { applyDevTools } from "prosemirror-dev-toolkit";
-import { doc, p, ol, li } from "./test/builders";
+import styles from "./ProseEditor.module.scss";
+import { schema } from "./schema";
+import "./styles/ProseMirror.scss";
+import { blockquote, doc, h2, img, li, p, ul } from "./test/builders";
+import "prosemirror-view/style/prosemirror.css";
+import { useEffectOnce } from "react-use";
+import { validateSchema } from "./utils/validateSchema";
 
 export type ProseEditorProps = {};
 
 export const ProseEditor: React.FC<ProseEditorProps> = (props) => {
   // const {} = props;
+  const nodeViewPortals = useSyncExternalStore(
+    nodeViewStore.subscribe,
+    nodeViewStore.getSnapshot
+  );
+
   const [editorState, setEditorState] = useState(() => {
     return EditorState.create({
       schema: schema,
       plugins,
       // doc: schema.nodes.doc.create(null, [schema.nodes.paragraph.create()!])!,
-      doc: doc(p()),
+      doc: doc(ul(li("test"))),
     });
   });
   const editorProps: EditorProps = {};
-  const [editorView] = useState(() => {
+
+  const editorView = useMemo(() => {
+    nodeViewStore.clear(); // remain compatible with React.StrictMode
     const view = new EditorView(null, {
       ...editorProps,
       state: editorState,
@@ -30,28 +51,49 @@ export const ProseEditor: React.FC<ProseEditorProps> = (props) => {
         setEditorState(newState);
         view.updateState(newState);
       },
+      nodeViews: {
+        image: reactNodeViewFactory(Image),
+        blockquote: reactNodeViewFactory(Blockquote),
+      },
     });
+
+    applyDevTools(view);
     return view;
+  }, []);
+
+  useEffectOnce(() => {
+    validateSchema(editorState);
   });
 
-  const editorRef = useCallback(
-    (el: HTMLDivElement | null) => {
-      if (el) {
-        el.appendChild(editorView.dom);
-      }
-    },
-    [editorView]
-  );
+  // useUnmount(() => {
+  //   editorView.destroy();
+  // });
 
-  useEffect(() => {
-    applyDevTools(editorView);
-  }, [editorView]);
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (editorRef.current) {
+      if (editorRef.current.hasChildNodes()) {
+        editorRef.current.replaceChildren();
+      }
+      editorRef.current.appendChild(editorView.dom);
+    }
+  }, []);
+
+  // const editorRef = useCallback(
+  //   (el: HTMLDivElement | null) => {
+  //     if (el) {
+  //       el.appendChild(editorView.current().dom);
+  //     }
+  //   },
+  //   [editorView]
+  // );
 
   return (
-    <div
-      className={styles.ProseEditor}
-      ref={editorRef}
-      spellCheck={false}
-    ></div>
+    <div className={styles.ProseEditor} ref={editorRef} spellCheck={false}>
+      {nodeViewPortals.map(({ key, nodeView }) => {
+        return nodeView;
+      })}
+    </div>
   );
 };

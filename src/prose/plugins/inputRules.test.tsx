@@ -3,6 +3,7 @@ import userEvent, {
 } from "@testing-library/user-event";
 import { renderNewDoc } from "prose/test/renderNewDoc";
 import { stubElementFromPoint } from "prose/test/stubElementFromPoint";
+import { screen } from "@testing-library/react";
 
 describe("inputRules", () => {
   stubElementFromPoint();
