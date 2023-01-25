@@ -2,20 +2,29 @@ import { schema } from "prose/schema";
 import { InputRule, inputRules } from "prosemirror-inputrules";
 
 /**
- * Transforms `- ` into an unordered list
+ * Transforms `-` into an unordered list
+ * Except when it detects you're trying to type a check list (e.g. `- []`)
  */
-const ulMarkdownRule = new InputRule(/^-\s$/, (state, match, start, end) => {
-  const { tr } = state;
-  tr.replaceWith(
-    start - 1,
-    end + 1,
-    schema.nodes.unordered_list.create(
-      null,
-      schema.nodes.list_item.create(null, schema.nodes.paragraph.create())
-    )
-  );
-  return tr;
-});
+// const ulMarkdownRule = new InputRule(/^-\s$/, (state, match, start, end) => {
+const ulMarkdownRule = new InputRule(
+  /^- ?(?<text>\S+)(?<!\[x?\]?)$/,
+  (state, match, start, end) => {
+    const { tr } = state;
+    const text = match.groups?.text;
+    tr.replaceWith(
+      start - 1,
+      end + 1,
+      schema.nodes.unordered_list.create(
+        null,
+        schema.nodes.list_item.create(
+          null,
+          schema.nodes.paragraph.create(null, text ? [schema.text(text)] : [])
+        )
+      )
+    );
+    return tr;
+  }
+);
 
 /**
  * Transforms `1. ` into an ordered list

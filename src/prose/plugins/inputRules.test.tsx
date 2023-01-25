@@ -17,12 +17,50 @@ describe("inputRules", () => {
   });
 
   describe("Markdown", () => {
-    it("can create an unordered_list", async () => {
-      const { view } = renderNewDoc();
+    describe("unordered_list", () => {
+      it.each([
+        ["- a", "a"],
+        ["-a", "a"],
+        ["- 1", "1"],
+        ["-1", "1"],
+        ["- (", "("],
+        ["-(", "("],
+        ["- [a", "[a"],
+        ["-[a", "[a"],
+        ["- [a]", "[a]"],
+        ["-[a]", "[a]"],
+      ])(
+        'can create an unordered_list by typing "%s"',
+        async (input, result) => {
+          const { view } = renderNewDoc();
+          const reactUseInput = input.replaceAll("[", "[[");
 
-      await user.type(view.dom.firstElementChild!, "- abc");
-      expect(view.state.doc.toString()).toBe(
-        'doc(unordered_list(list_item(paragraph("abc"))))'
+          await user.type(view.dom.firstElementChild!, reactUseInput);
+          expect(view.state.doc.toString()).toBe(
+            `doc(unordered_list(list_item(paragraph("${result}"))))`
+          );
+        }
+      );
+      it.each([
+        "- [",
+        "-[",
+        "- [x",
+        "-[x",
+        "-[]",
+        "- []",
+        "-[x]",
+        "- [x]",
+        "-[ ]",
+        "- [ ]",
+      ])(
+        'will not create an unordered_list when typing "%s"',
+        async (input) => {
+          const { view } = renderNewDoc();
+          const reactUseInput = input.replaceAll("[", "[[");
+
+          await user.type(view.dom.firstElementChild!, reactUseInput);
+          expect(view.state.doc.toString()).not.toContain("unordered_list");
+        }
       );
     });
     it("can create an ordered_list", async () => {
