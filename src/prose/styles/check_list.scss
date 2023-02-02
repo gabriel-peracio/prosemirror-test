@@ -1,0 +1,12 @@
+$list-max-level: 10;
+
+ul[data-node-type="check_list"] {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  @for $level from 0 through $list-max-level {
+    > li > *[data-level="#{$level}"] {
+      padding-left: $level * 24px;
+    }
+  }
+}

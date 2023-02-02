@@ -1,6 +1,6 @@
 import { clamp } from "lodash";
 import { MAX_LIST_ITEM_INDENTATION } from "prose/constants";
-import { schema } from "prose/schema";
+// import { schema } from "prose/schema";
 import { Node } from "prosemirror-model";
 import { Command } from "prosemirror-state";
 
@@ -18,7 +18,7 @@ export const listItemIndentation =
   ({ tr, selection: { $from, $to, from, to } }, dispatch) => {
     const posList: Array<[number, Node]> = [];
     tr.doc.nodesBetween(from, to, (node, pos) => {
-      if (node.type === schema.nodes.list_item) {
+      if (node.type.groups.includes("list_item")) {
         posList.push([pos, node]);
         return false;
       }

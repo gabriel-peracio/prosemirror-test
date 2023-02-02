@@ -62,6 +62,11 @@ describe("inputRules", () => {
           expect(view.state.doc.toString()).not.toContain("unordered_list");
         }
       );
+      it("will not create an invalid unordered_list structure", async () => {
+        const { view } = renderNewDoc();
+        await user.type(view.dom.firstElementChild!, "--a");
+        expect(view.state.doc.toString()).not.toContain("(list_item)");
+      });
     });
     it("can create an ordered_list", async () => {
       const { view } = renderNewDoc();

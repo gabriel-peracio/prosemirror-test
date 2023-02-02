@@ -20,7 +20,7 @@ specifiers:
   prosemirror-keymap: ^1.2.0
   prosemirror-model: ^1.18.3
   prosemirror-state: ^1.4.2
-  prosemirror-view: ^1.29.1
+  prosemirror-view: ^1.30.0
   react: ^18.2.0
   react-dom: ^18.2.0
   react-scripts: 5.0.1
@@ -43,7 +43,7 @@ dependencies:
   prosemirror-keymap: 1.2.0
   prosemirror-model: 1.18.3
   prosemirror-state: 1.4.2
-  prosemirror-view: 1.29.1
+  prosemirror-view: 1.30.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-scripts: 5.0.1_vrhrsyowp6vs4524xuw7v67ume
@@ -8144,7 +8144,7 @@ packages:
     dependencies:
       prosemirror-model: 1.18.3
       prosemirror-transform: 1.7.0
-      prosemirror-view: 1.29.1
+      prosemirror-view: 1.30.0
     dev: false
 
   /prosemirror-transform/1.7.0:
@@ -8153,8 +8153,8 @@ packages:
       prosemirror-model: 1.18.3
     dev: false
 
-  /prosemirror-view/1.29.1:
-    resolution: {integrity: sha512-OhujVZSDsh0l0PyHNdfaBj6DBkbhYaCfbaxmTeFrMKd/eWS+G6IC+OAbmR9IsLC8Se1HSbphMaXnsXjupHL3UQ==}
+  /prosemirror-view/1.30.0:
+    resolution: {integrity: sha512-z6RXp2GFH8mk7+LWCGWvdpOIpf5o5UwIB6SiBiTFe6eA8H8qwFDW0EkiIfohlATHoSGXvlHtD+hfpAHdfO5fvQ==}
     dependencies:
       prosemirror-model: 1.18.3
       prosemirror-state: 1.4.2

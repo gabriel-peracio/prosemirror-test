@@ -6,14 +6,16 @@ import { ReactNodeView } from "./ReactNodeView";
 export const reactNodeViewFactory = (
   reactComponent: React.ForwardRefExoticComponent<
     any & React.RefAttributes<HTMLElement & any>
-  >
+  >,
+  tag?: string
 ) => {
   const nodeView = (
     ...nodeViewConstructorParams: Parameters<NodeViewConstructor>
   ) => {
     const reactNodeViewInstance = new ReactNodeView(
       nodeViewConstructorParams,
-      reactComponent
+      reactComponent,
+      tag
     );
     const portal = reactNodeViewInstance.renderPortal();
     const key = reactNodeViewInstance.key;

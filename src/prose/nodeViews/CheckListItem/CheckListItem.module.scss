@@ -1,0 +1,11 @@
+.CheckListItem {
+  display: grid;
+  grid-template-columns: min-content auto;
+  column-gap: 1ch;
+  > * {
+    grid-column: 2;
+  }
+  .checkboxColumn {
+    grid-column: 1;
+  }
+}

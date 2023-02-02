@@ -6,7 +6,9 @@ import {
   heading,
   unordered_list,
   ordered_list,
+  check_list,
   list_item,
+  check_list_item,
   blockquote,
   image,
 } from "./nodes";
@@ -17,8 +19,10 @@ export const nodes = {
   paragraph,
   text,
   heading,
+  check_list, // must be before unordered_list
   unordered_list,
   ordered_list,
+  check_list_item, // must be before list_item
   list_item,
   blockquote,
   image,

@@ -23,6 +23,7 @@ import { redo, undo } from "prosemirror-history";
 
 export const Keymap = {
   Enter: chainCommands(liftEmptyBlock, splitListItem, splitBlock),
+  "Shift-Enter": splitBlock,
   Backspace: chainCommands(unindentFromStart, deleteSelection, joinBackward),
   Delete: chainCommands(deleteSelection, joinForward),
   Tab: listItemIndentation(Indentation.Increase),

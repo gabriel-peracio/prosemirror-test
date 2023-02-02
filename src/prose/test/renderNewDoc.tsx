@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { Node } from "prosemirror-model";
 import { EditorStateConfig } from "prosemirror-state";
-import { EditorView } from "prosemirror-view";
+import { EditorProps, EditorView } from "prosemirror-view";
 import { doc, p } from "./builders";
 import { EditorTestHarness } from "./EditorTestHarness";
 import { plugins } from "prose/plugins";
@@ -25,6 +25,7 @@ class RenderNewDocResult {
 
 type renderNewDocOptions = {
   plugins?: EditorStateConfig["plugins"];
+  nodeViews?: EditorProps["nodeViews"];
 };
 
 export function renderNewDoc(): RenderNewDocResult;
@@ -56,6 +57,7 @@ export function renderNewDoc(
       doc={newDoc}
       onViewChanged={(newView) => (result.view = newView)}
       plugins={options.plugins}
+      nodeViews={options.nodeViews}
     />
   );
 

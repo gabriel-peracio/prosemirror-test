@@ -11,6 +11,8 @@ const ulMarkdownRule = new InputRule(
   (state, match, start, end) => {
     const { tr } = state;
     const text = match.groups?.text;
+    if (state.selection.$from.node(-1).type === schema.nodes.list_item)
+      return null;
     tr.replaceWith(
       start - 1,
       end + 1,

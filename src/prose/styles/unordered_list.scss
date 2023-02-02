@@ -8,8 +8,17 @@ ul[data-node-type="unordered_list"] {
   padding: 0;
   list-style-type: none;
   > li {
-    display: flex;
-    gap: 1ch;
+    display: grid;
+    grid-template-columns: min-content auto;
+    column-gap: 1ch;
+    > * {
+      grid-column: 2;
+    }
+    &::before {
+      grid-column: 1;
+      // fix: some browsers show a selection on the numbers
+      user-select: none;
+    }
   }
   @for $level from 0 through $list-max-level {
     > li[data-level="#{$level}"] {

@@ -6,7 +6,8 @@ import {
 } from "prosemirror-view";
 import { Node as ProseNode } from "prosemirror-model";
 import { createPortal } from "react-dom";
-import React, { useEffect, useLayoutEffect, useSyncExternalStore } from "react";
+import React, { useLayoutEffect, useSyncExternalStore } from "react";
+import { isEqual, omit } from "lodash";
 
 type NodeViewContext = {
   node: ProseNode;
@@ -52,7 +53,10 @@ export class ReactNodeView implements NodeView {
       decorations: readonly Decoration[],
       innerDecorations: DecorationSource
     ],
-    component: React.ForwardRefExoticComponent<React.RefAttributes<HTMLElement>>
+    component: React.ForwardRefExoticComponent<
+      React.RefAttributes<HTMLElement>
+    >,
+    tag?: string
   ) {
     const [node, view, getPos, decorations, innerDecorations] =
       nodeViewConstructorParams;
@@ -61,7 +65,9 @@ export class ReactNodeView implements NodeView {
     this.getPos = getPos;
     this.decorations = decorations;
     this.innerDecorations = innerDecorations;
-    const domEl = document.createElement(this.node.isInline ? "span" : "div");
+    const domEl = document.createElement(
+      tag ?? (this.node.isInline ? "span" : "div")
+    );
     domEl.setAttribute("data-node-type", this.node.type.name);
     this.dom = domEl;
     this.contentDomContainerRef = React.createRef();
@@ -141,9 +147,9 @@ export class ReactNodeView implements NodeView {
     decorations: readonly Decoration[],
     innerDecorations: DecorationSource
   ) {
-    // console.log("update");
     if (node !== this.nodeViewContext.node) {
       this.nodeViewStore.updateNode(node);
+      return true;
     }
     if (decorations !== this.nodeViewContext.decorations) {
       this.nodeViewStore.updateDecorations(decorations);
@@ -154,11 +160,19 @@ export class ReactNodeView implements NodeView {
 
     return true;
   }
-  setSelection() {
+  get setSelection() {
+    /**
+     * If you provide a setSelection method, prosemirror expects you to handle the selection yourself, and provides no
+     * mechanism for you to opt-out of doing so. This is a problem for us, because we want to listen for selection changes
+     * and update the nodeViewContext.selection, but we don't want to handle the selection ourselves.
+     * Luckily, we can use a getter here to receive the notification of selection changes, but not actually handle them.
+     */
     this.nodeViewStore.updateSelection(this.view.state.selection);
-    // this.nodeViewContext.selection = this.view.state.selection;
-    // console.log("setSelection");
+    return undefined;
   }
+  // setSelection() {
+  //   this.nodeViewStore.updateSelection(this.view.state.selection);
+  // }
   selectNode() {
     this.nodeViewStore.updateSelection(this.view.state.selection);
     // this.nodeViewContext.selection = this.view.state.selection;

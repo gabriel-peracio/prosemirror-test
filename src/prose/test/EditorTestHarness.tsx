@@ -1,3 +1,4 @@
+import { nodeViewStore } from "prose/nodeViews/NodeViewStore";
 import { schema } from "prose/schema";
 import { validateSchema } from "prose/utils/validateSchema";
 import { Node } from "prosemirror-model";
@@ -9,19 +10,27 @@ import React, {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 export type EditorTestHarnessProps = {
   onViewChanged: (view: EditorView) => void;
   doc: Node;
   plugins?: EditorStateConfig["plugins"];
+  nodeViews?: EditorProps["nodeViews"];
 };
 
 export const EditorTestHarness: React.FC<EditorTestHarnessProps> = ({
   doc,
   onViewChanged,
   plugins,
+  nodeViews,
 }) => {
+  const nodeViewPortals = useSyncExternalStore(
+    nodeViewStore.subscribe,
+    nodeViewStore.getSnapshot
+  );
+
   const [editorState, setEditorState] = useState(() => {
     return EditorState.create({
       schema: schema,
@@ -41,6 +50,7 @@ export const EditorTestHarness: React.FC<EditorTestHarnessProps> = ({
         setEditorState(newState);
         view.updateState(newState);
       },
+      nodeViews,
     });
     return view;
   }, []);
@@ -62,5 +72,11 @@ export const EditorTestHarness: React.FC<EditorTestHarnessProps> = ({
     validateSchema(editorState);
   });
 
-  return <div className="ProseEditor" ref={editorRef} spellCheck={false}></div>;
+  return (
+    <div className="ProseEditor" ref={editorRef} spellCheck={false}>
+      {nodeViewPortals.map(({ key, nodeView }) => {
+        return nodeView;
+      })}
+    </div>
+  );
 };
