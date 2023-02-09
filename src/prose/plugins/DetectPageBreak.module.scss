@@ -1,0 +1,36 @@
+$gapBetweenPages: 20mm;
+$clipOverflow: 7px;
+
+.lineBreak {
+  width: calc(100% + 20mm * 2 + 20px);
+  margin-left: calc(-20mm - 10px);
+  // transform: translateX(-20mm - 10px);
+  background: #ccc;
+  height: calc(40mm * 2 + $gapBetweenPages);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  &::before,
+  &::after {
+    margin-left: 10px;
+    content: "";
+    background: #fff;
+    width: 210mm;
+    height: 40mm;
+    box-shadow: 0 0 5px 3px #666;
+  }
+  &::before {
+  }
+  &::after {
+  }
+  @media print {
+    display: none;
+  }
+}
+
+:global(.page-break-detecting) {
+  .lineBreak {
+    display: none;
+  }
+}

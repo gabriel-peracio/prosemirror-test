@@ -1,2 +1,12 @@
 .ProseEditor {
+  width: 210mm - (20mm * 2);
+  padding: 40mm 20mm;
+  margin: auto;
+  box-shadow: 0 0 5px 3px #666;
+  background: #fff;
+  @media print {
+    width: 210mm - (20mm * 2);
+    padding: 0;
+    box-shadow: none;
+  }
 }
