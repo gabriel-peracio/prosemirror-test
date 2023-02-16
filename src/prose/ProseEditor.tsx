@@ -22,6 +22,8 @@ import "prosemirror-view/style/prosemirror.css";
 import { useEffectOnce } from "react-use";
 import { validateSchema } from "./utils/validateSchema";
 import { CheckListItem } from "./nodeViews/CheckListItem/CheckListItem";
+import { times } from "lodash";
+import { lorem } from "./test/utils/lorem";
 
 export type ProseEditorProps = {};
 
@@ -37,8 +39,8 @@ export const ProseEditor: React.FC<ProseEditorProps> = (props) => {
       schema: schema,
       plugins,
       // doc: schema.nodes.doc.create(null, [schema.nodes.paragraph.create()!])!,
-      // doc: doc(p("hello"), cl(cli(p("test"))), p("world")),
-      doc: doc(cl(cli(p("Item")))),
+      doc: doc(...times(50, (idx) => p(`[${idx}]${lorem[idx]}`))),
+      // doc: doc(cl(cli(p("Item")))),
       // doc: doc(ul(li(p("hello"), p("world")))),
     });
   });

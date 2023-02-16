@@ -1,0 +1,6 @@
+.App {
+  padding: 20mm 0;
+  @media print {
+    padding: 0;
+  }
+}

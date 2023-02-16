@@ -10,6 +10,7 @@
     "@types/react-dom": "^18.0.9",
     "clsx": "^1.2.1",
     "lodash": "^4.17.21",
+    "murmurhash": "^2.0.1",
     "prosemirror-commands": "^1.4.0",
     "prosemirror-history": "^1.3.0",
     "prosemirror-inputrules": "^1.2.0",

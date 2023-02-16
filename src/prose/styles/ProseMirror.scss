@@ -3,11 +3,14 @@
  **************************************************************************/
 
 .ProseMirror {
+  widows: 1;
+  orphans: 1;
   &:focus-visible {
     outline: none;
   }
   p {
     margin: 0;
+    // margin-bottom: 8px;
   }
   @import "./unordered_list.scss";
   @import "./ordered_list.scss";

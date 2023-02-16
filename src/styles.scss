@@ -1,3 +1,19 @@
 body {
   font-family: sans-serif;
+  line-height: 1;
+  margin: 0;
+  background: #ccc;
+  @media print {
+    background: transparent;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 40mm 20mm;
+  }
+  .__prosemirror-dev-toolkit__ {
+    display: none;
+  }
 }
