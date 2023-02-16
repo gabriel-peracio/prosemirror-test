@@ -1,7 +1,21 @@
 $gapBetweenPages: 20mm;
 $clipOverflow: 7px;
 
-.lineBreak {
+.lineBreak.debug {
+  width: calc(100% + 20mm * 2 + 20px);
+  margin-left: calc(-20mm - 10px);
+  height: calc(40mm * 2 + $gapBetweenPages);
+  background: #333;
+  & > .remainder {
+    background: rgba(0, 255, 0, 0.25);
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+.lineBreak.nonDebug {
   width: calc(100% + 20mm * 2 + 20px);
   margin-left: calc(-20mm - 10px);
   // transform: translateX(-20mm - 10px);
@@ -32,5 +46,23 @@ $clipOverflow: 7px;
 :global(.page-break-detecting) {
   .lineBreak {
     display: none;
+  }
+}
+
+.pageMarker {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 1px;
+  background: red;
+  @media print {
+    display: none;
+  }
+  & > .formula {
+    position: absolute;
+    font-family: monospace;
+    font-size: 12px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
   }
 }

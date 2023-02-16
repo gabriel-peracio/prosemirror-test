@@ -6,6 +6,7 @@
   background: #fff;
   @media print {
     width: 210mm - (20mm * 2);
+    // width: 100%;
     padding: 0;
     box-shadow: none;
   }
