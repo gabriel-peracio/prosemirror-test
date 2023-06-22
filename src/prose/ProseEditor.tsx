@@ -39,7 +39,7 @@ export const ProseEditor: React.FC<ProseEditorProps> = (props) => {
       schema: schema,
       plugins,
       // doc: schema.nodes.doc.create(null, [schema.nodes.paragraph.create()!])!,
-      doc: doc(...times(50, (idx) => p(`[${idx}]${lorem[idx]}`))),
+      doc: doc(...times(45, (idx) => p(`[${idx}]${lorem[idx]}`))),
       // doc: doc(cl(cli(p("Item")))),
       // doc: doc(ul(li(p("hello"), p("world")))),
     });

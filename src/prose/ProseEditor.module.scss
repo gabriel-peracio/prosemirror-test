@@ -4,9 +4,10 @@
   margin: auto;
   box-shadow: 0 0 5px 3px #666;
   background: #fff;
+  min-height: var(--total-height);
   @media print {
     width: 210mm - (20mm * 2);
-    // width: 100%;
+    min-height: unset;
     padding: 0;
     box-shadow: none;
   }

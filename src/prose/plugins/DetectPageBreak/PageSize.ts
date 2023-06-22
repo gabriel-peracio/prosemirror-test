@@ -67,6 +67,17 @@ function parseMargins(margins: marginDef): {
   };
 }
 
+function convertToPx({ value, unit }: unitValue) {
+  switch (unit) {
+    case "mm":
+      return value * mmPxHeight;
+    case "in":
+      return value * inPxHeight;
+    default:
+      return value;
+  }
+}
+
 type marginDef =
   | undefined
   | ({
@@ -77,6 +88,16 @@ type marginDef =
       | { top: number; right: number; bottom: number; left: number }
     ));
 
+type unitValue = {
+  unit: "px" | "mm" | "in";
+  value: number;
+};
+type PageConstructorProps = {
+  sizeName: PageSizeNames;
+  orientation: PageOrientation;
+  margins?: marginDef;
+  gap?: unitValue;
+};
 export class Page {
   width: number;
   height: number;
@@ -88,11 +109,13 @@ export class Page {
     bottom: number;
     left: number;
   };
-  constructor(
-    sizeName: PageSizeNames = PageSizeNames.A4,
-    orientation: PageOrientation = PageOrientation.Portrait,
-    margins?: marginDef
-  ) {
+  gap: number;
+  constructor({
+    sizeName = PageSizeNames.A4,
+    orientation = PageOrientation.Portrait,
+    margins,
+    gap = { unit: "px", value: 0 },
+  }: PageConstructorProps) {
     this.width = PageSizes[sizeName].width;
     this.height = PageSizes[sizeName].height;
     if (orientation === PageOrientation.Landscape) {
@@ -101,6 +124,7 @@ export class Page {
     }
     const parsedMargins = parseMargins(margins);
     this.margins = parsedMargins;
+    this.gap = convertToPx(gap);
 
     this.innerWidth = this.width - this.margins.left - this.margins.right;
     this.innerHeight = this.height - this.margins.top - this.margins.bottom;
@@ -110,5 +134,8 @@ export class Page {
   }
   getInnerBottom(pageIdx: number) {
     return this.getInnerTop(pageIdx) + this.innerHeight;
+  }
+  getBottom(pageIdx: number) {
+    return this.height * (pageIdx + 1) + this.gap * pageIdx;
   }
 }

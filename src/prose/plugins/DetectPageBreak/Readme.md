@@ -3,9 +3,9 @@
 - [x] mm->px conversion
 - [x] inch->px conversion
 - [x] Debug mode
-- [] Last page will appear to "end early" and be smaller than a full page.
+- [x] Last page will appear to "end early" and be smaller than a full page.
 - [] Add spacing between paragraphs
-- [] Check whether blank paragraphs screw up the calculations
+- [x] Check whether blank paragraphs screw up the calculations
 - [] A single paragraph can span more than one page
 - [] Correctly handle `orphans` and `widows`
 - [] Customize pages (letter/legal/etc) and margins

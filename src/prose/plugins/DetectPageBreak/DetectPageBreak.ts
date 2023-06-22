@@ -9,10 +9,15 @@ import { v3 } from "murmurhash";
 export const DetectPageBreakPluginKey = new PluginKey("DetectPageBreakPlugin");
 const DEBUG = false;
 
-const A4 = new Page(PageSizeNames.A4, PageOrientation.Portrait, {
-  unit: "mm",
-  horizontal: 20,
-  vertical: 40,
+const A4 = new Page({
+  sizeName: PageSizeNames.A4,
+  orientation: PageOrientation.Portrait,
+  margins: {
+    unit: "mm",
+    horizontal: 20,
+    vertical: 40,
+  },
+  gap: { unit: "mm", value: 20 },
 });
 
 type DetectPageBreakPluginState = {
@@ -244,6 +249,11 @@ const calculatePageBreakPositions = (
     });
     // console.groupEnd();
   }
+
+  view.dom.parentElement!.style.setProperty(
+    "--total-height",
+    `${A4.getBottom(currentPage) - A4.margins.top - A4.margins.bottom}px`
+  );
   return Array.from(foundPositions);
 };
 
@@ -304,9 +314,12 @@ export const DetectPageBreakPlugin = new Plugin<DetectPageBreakPluginState>({
       return state;
     },
   },
-  view: (editorView) => ({
-    update: handleUpdate,
-  }),
+  view: (editorView) => {
+    handleUpdate(editorView, editorView.state);
+    return {
+      update: handleUpdate,
+    };
+  },
   props: {
     decorations(state) {
       const { positions } = DetectPageBreakPluginKey.getState(
@@ -369,3 +382,5 @@ const nodeCache = new WeakMap<
     pageBreakPositionWithinNode: number;
   }
 >();
+
+let contentHeight = 0;
